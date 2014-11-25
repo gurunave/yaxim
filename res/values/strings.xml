@@ -306,6 +306,10 @@
     <string name="muc_invite_ok_button">Join Room!</string>
     <string name="muc_invite_reject">Reject Invitation!</string>
     <string name="chat_muc_userlist">Chat Room Participants (%s)</string>
+    <string name="muc_kicked">Kicked: %s</string>
+    <string name="muc_kicked_by">Kicked by %1$s: %2$s</string>
+    <string name="muc_banned">Banned: %s</string>
+    <string name="muc_banned_by">Banned by %1$s: %2$s</string>
     
 
 </resources>
