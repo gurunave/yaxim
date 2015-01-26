@@ -271,6 +271,7 @@ public class SmackableImp implements Smackable {
 		// actually, authenticated must be true now, or an exception must have
 		// been thrown.
 		if (isAuthenticated()) {
+			updateConnectionState(ConnectionState.LOADING);
 			registerMessageListener();
 			registerPresenceListener();
 			registerPongListener();
@@ -355,6 +356,7 @@ public class SmackableImp implements Smackable {
 				}.start();
 				break;
 			case CONNECTING:
+			case LOADING:
 			case DISCONNECTING:
 				// ignore all other cases
 				break;
@@ -383,6 +385,7 @@ public class SmackableImp implements Smackable {
 		case OFFLINE:
 			switch (mState) {
 			case CONNECTING:
+			case LOADING:
 			case ONLINE:
 				// update state before starting thread to prevent race conditions
 				updateConnectionState(ConnectionState.DISCONNECTING);
@@ -439,7 +442,7 @@ public class SmackableImp implements Smackable {
 
 	// called at the end of a state transition
 	private synchronized void updateConnectionState(ConnectionState new_state) {
-		if (new_state == ConnectionState.ONLINE || new_state == ConnectionState.CONNECTING)
+		if (new_state == ConnectionState.ONLINE || new_state == ConnectionState.LOADING)
 			mLastError = null;
 		Log.d(TAG, "updateConnectionState: " + mState + " -> " + new_state + " (" + mLastError + ")");
 		if (new_state == mState)
