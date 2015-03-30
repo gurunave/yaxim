@@ -1,11 +1,10 @@
 package org.yaxim.androidclient.dialogs;
 
-import org.yaxim.androidclient.XMPPRosterServiceAdapter;
 import org.yaxim.androidclient.data.ChatRoomHelper;
 import org.yaxim.androidclient.exceptions.YaximXMPPAdressMalformedException;
 import org.yaxim.androidclient.util.XMPPHelper;
-import org.yaxim.androidclient.MainWindow;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,23 +20,20 @@ import org.yaxim.androidclient.R;
 public class EditMUCDialog extends AlertDialog implements
 		DialogInterface.OnClickListener, TextWatcher {
 
-	private MainWindow mMainWindow;
-	private XMPPRosterServiceAdapter mServiceAdapter;
+	private Activity mContext;
 
 	private Button okButton;
 	private EditText mRoomJID;
 	private EditText mNickName;
 	private EditText mPassword;
 
-	public EditMUCDialog(MainWindow mainWindow,
-			XMPPRosterServiceAdapter serviceAdapter) {
-		super(mainWindow);
-		mMainWindow = mainWindow;
-		mServiceAdapter = serviceAdapter;
+	public EditMUCDialog(Activity context) {
+		super(context);
+		mContext = context;
 
 		setTitle("Chat Room Configuration"); //TODO i18n
 
-		LayoutInflater inflater = (LayoutInflater) mainWindow
+		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View group = inflater.inflate(R.layout.muc_new_dialog, null, false);
 		setView(group);
@@ -46,15 +42,14 @@ public class EditMUCDialog extends AlertDialog implements
 		mNickName = (EditText)group.findViewById(R.id.muc_new_nick);
 		mPassword = (EditText)group.findViewById(R.id.muc_new_pw);
 
-		setButton(BUTTON_POSITIVE, mainWindow.getString(android.R.string.ok), this);
-		setButton(BUTTON_NEGATIVE, mainWindow.getString(android.R.string.cancel),
+		setButton(BUTTON_POSITIVE, context.getString(android.R.string.ok), this);
+		setButton(BUTTON_NEGATIVE, context.getString(android.R.string.cancel),
 				(DialogInterface.OnClickListener)null);
 
 	}
-	public EditMUCDialog(MainWindow mainWindow,
-			XMPPRosterServiceAdapter serviceAdapter, String roomJID) {
-		this(mainWindow, serviceAdapter);
-		ChatRoomHelper.RoomInfo ri = ChatRoomHelper.getRoomInfo(mMainWindow, roomJID);
+	public EditMUCDialog(Activity context, String roomJID) {
+		this(context);
+		ChatRoomHelper.RoomInfo ri = ChatRoomHelper.getRoomInfo(mContext, roomJID);
 		mRoomJID.setText(roomJID);
 		mRoomJID.setEnabled(false);
 		mNickName.setText(ri.nickname);
@@ -72,11 +67,11 @@ public class EditMUCDialog extends AlertDialog implements
 	}
 
 	public void onClick(DialogInterface dialog, int which) {
-		ChatRoomHelper.addRoom(mMainWindow,
+		ChatRoomHelper.addRoom(mContext,
 				mRoomJID.getText().toString(),
 				mPassword.getText().toString(),
 				mNickName.getText().toString());
-		ChatRoomHelper.syncDbRooms(mMainWindow);
+		ChatRoomHelper.syncDbRooms(mContext);
 	}
 
 	public void afterTextChanged(Editable s) {
@@ -87,7 +82,7 @@ public class EditMUCDialog extends AlertDialog implements
 		} catch (YaximXMPPAdressMalformedException e) {
 			okButton.setEnabled(false);
 			if (s.length() > 0)
-				mRoomJID.setError(mMainWindow.getString(R.string.Global_JID_malformed));
+				mRoomJID.setError(mContext.getString(R.string.Global_JID_malformed));
 		}
 	}
 

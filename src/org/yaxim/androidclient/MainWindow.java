@@ -540,7 +540,7 @@ public class MainWindow extends SherlockExpandableListActivity {
 				mucInviteDialog(userJid, userName);
 				return true;
 			case R.id.roster_contextmenu_muc_edit:
-				new EditMUCDialog(this, serviceAdapter, userJid).show();
+				new EditMUCDialog(this, userJid).show();
 				return true;
 			}
 		} else {
@@ -1413,7 +1413,7 @@ public class MainWindow extends SherlockExpandableListActivity {
 					if(mode != INVITE_DIALOG) {
 						Cursor c = (Cursor) mucsList.getItemAtPosition(position);
 						final String jid = c.getString(c.getColumnIndex(RosterConstants.JID));
-						new EditMUCDialog(MainWindow.this, serviceAdapter, jid).show();
+						new EditMUCDialog(MainWindow.this, jid).show();
 						return;
 					}
 					selectInviteMuc(position, id);
