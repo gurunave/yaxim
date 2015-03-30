@@ -7,6 +7,8 @@ import java.util.zip.Checksum;
 import org.yaxim.androidclient.R;
 import org.yaxim.androidclient.YaximApplication;
 import org.yaxim.androidclient.data.ChatProvider.ChatConstants;
+import org.yaxim.androidclient.data.ChatRoomHelper;
+import org.yaxim.androidclient.dialogs.EditMUCDialog;
 import org.yaxim.androidclient.service.IXMPPMucService;
 import org.yaxim.androidclient.service.ParcelablePresence;
 import org.yaxim.androidclient.service.XMPPService;
@@ -111,6 +113,17 @@ public class MUCChatWindow extends ChatWindow {
 		switch (item.getItemId()) {
 		case R.id.chat_optionsmenu_userlist:
 			showUserList();
+			return true;
+		case R.id.roster_contextmenu_muc_edit:
+			new EditMUCDialog(this, mWithJabberID).show();
+			return true;
+		case R.id.roster_contextmenu_muc_leave:
+			// TODO: leave MUC dialog
+			if (ChatRoomHelper.removeRoom(this, mWithJabberID))
+				ChatRoomHelper.syncDbRooms(this);
+			// XXX: if we do not unbind here, we will leak the service
+			unbindXMPPService();
+			finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
