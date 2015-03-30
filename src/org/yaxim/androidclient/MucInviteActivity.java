@@ -71,25 +71,13 @@ public class MucInviteActivity extends SherlockActivity {
 					return;
 				}
 								
-				Intent muctestIntent = new Intent(MucInviteActivity.this, XMPPService.class);
-				muctestIntent.setAction("org.yaxim.androidclient.XMPPSERVICE");
-				Uri dtaUri = Uri.parse(room+"?chat");
-				muctestIntent.setData(dtaUri);
-				
-				ServiceConnection muctestServiceConnection = new ServiceConnection() {
-					public void onServiceConnected(ComponentName name, IBinder service) {
-						IXMPPMucService mucService = IXMPPMucService.Stub.asInterface(service);
-						try {
-							if (ChatRoomHelper.addRoom(MucInviteActivity.this, room, "", nick))
-								mucService.syncDbRooms();
-						} catch (RemoteException e) {
-							e.printStackTrace();
-						}
-						MucInviteActivity.this.finish();
-					}
-					public void onServiceDisconnected(ComponentName name) {}
-				};
-				bindService(muctestIntent, muctestServiceConnection, BIND_AUTO_CREATE);
+				if (ChatRoomHelper.addRoom(MucInviteActivity.this, room, "", nick))
+					ChatRoomHelper.syncDbRooms(MucInviteActivity.this);
+				MucInviteActivity.this.finish();
+				Intent chatIntent = new Intent(MucInviteActivity.this,
+						org.yaxim.androidclient.chat.MUCChatWindow.class);
+				chatIntent.setData(Uri.parse(room));
+				startActivity(chatIntent);
 			}
 		});
 	    
