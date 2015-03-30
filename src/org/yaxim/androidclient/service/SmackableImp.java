@@ -1500,7 +1500,7 @@ public class SmackableImp implements Smackable {
 		cvR.put(RosterProvider.RosterConstants.GROUP, "MUCs");
 		upsertRoster(cvR, room);
 		try {
-			muc.join(nickname, password, history, 5*PACKET_TIMEOUT);
+			muc.join(nickname, password, history, 10*PACKET_TIMEOUT);
 		} catch (Exception e) {
 			Log.e(TAG, "Could not join MUC-room "+room);
 			e.printStackTrace();
