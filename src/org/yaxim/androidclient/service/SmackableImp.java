@@ -1411,7 +1411,7 @@ public class SmackableImp implements Smackable {
 			//debugLog("Found MUC Room: "+jid+" with nick "+nickname+" and pw "+password);
 			if(!joinedRooms.contains(jid)) {
 				debugLog("room " + jid + " isn't joined yet, i wanna join...");
-				joinRoom(jid, nickname, password); // TODO: make historyLen configurable
+				joinRoomAsync(jid, nickname, password); // TODO: make historyLen configurable
 			} else {
 				MultiUserChat muc = multiUserChats.get(jid);
 				if (!muc.getNickname().equals(nickname)) {
@@ -1442,6 +1442,23 @@ public class SmackableImp implements Smackable {
 				);
 	}
 	
+	private Map<String,Runnable> ongoingMucJoins = new java.util.concurrent.ConcurrentHashMap<String, Runnable>();
+	private void joinRoomAsync(final String room, final String nickname, final String password) {
+		if (ongoingMucJoins.containsKey(room))
+			return;
+		Thread joiner = new Thread() {
+			@Override
+			public void run() {
+				Log.d(TAG, "async joining " + room);
+				boolean result = joinRoom(room, nickname, password);
+				Log.d(TAG, "async joining " + room + " done: " + result);
+				ongoingMucJoins.remove(room);
+			}
+		};
+		ongoingMucJoins.put(room, joiner);
+		joiner.start();
+	}
+
 	private boolean joinRoom(final String room, String nickname, String password) {
 		MultiUserChat muc = new MultiUserChat(mXMPPConnection, room);
 		muc.addUserStatusListener(new org.jivesoftware.smackx.muc.DefaultUserStatusListener() {
