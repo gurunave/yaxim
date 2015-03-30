@@ -15,6 +15,7 @@ import org.yaxim.androidclient.data.RosterProvider.RosterConstants;
 import org.yaxim.androidclient.data.YaximConfiguration;
 import org.yaxim.androidclient.dialogs.AddRosterItemDialog;
 import org.yaxim.androidclient.dialogs.ChangeStatusDialog;
+import org.yaxim.androidclient.dialogs.ConfirmDialog;
 import org.yaxim.androidclient.dialogs.EditMUCDialog;
 import org.yaxim.androidclient.dialogs.FirstStartDialog;
 import org.yaxim.androidclient.dialogs.GroupNameView;
@@ -543,9 +544,7 @@ public class MainWindow extends SherlockExpandableListActivity {
 				new EditMUCDialog(this, userJid).show();
 				return true;
 			case R.id.roster_contextmenu_muc_leave:
-				// TODO: leave MUC dialog
-				if (ChatRoomHelper.removeRoom(MainWindow.this, userJid))
-					ChatRoomHelper.syncDbRooms(MainWindow.this);
+				ConfirmDialog.showMucLeave(this, userJid);
 				return true;
 			}
 		} else {
