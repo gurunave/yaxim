@@ -1445,6 +1445,9 @@ public class MainWindow extends SherlockExpandableListActivity {
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
 					if(mode != INVITE_DIALOG) {
+						Cursor c = (Cursor) mucsList.getItemAtPosition(position);
+						final String jid = c.getString(c.getColumnIndex(RosterConstants.JID));
+						new EditMUCDialog(MainWindow.this, serviceAdapter, jid).show();
 						return;
 					}
 					selectInviteMuc(position, id);
