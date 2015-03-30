@@ -1255,25 +1255,8 @@ public class MainWindow extends SherlockExpandableListActivity {
 		}
 		
 		public void deleteItem(int dbID, final String roomJid) {
-			Intent mucDeleteIntent = new Intent(MainWindow.this, XMPPService.class);
-			mucDeleteIntent.setAction("org.yaxim.androidclient.XMPPSERVICE");
-			Uri dtaUri = Uri.parse(roomJid+"?chat");
-			mucDeleteIntent.setData(dtaUri);
-			
-			ServiceConnection muctestServiceConnection = new ServiceConnection() {
-				public void onServiceConnected(ComponentName name, IBinder service) {
-					IXMPPMucService mucService = IXMPPMucService.Stub.asInterface(service);
-					try {
-						if (ChatRoomHelper.removeRoom(MainWindow.this, roomJid))
-							mucService.syncDbRooms();
-					} catch (RemoteException e) {
-						e.printStackTrace();
-					}
-					unbindService(this);
-				}
-				public void onServiceDisconnected(ComponentName name) {}
-			};
-			bindService(mucDeleteIntent, muctestServiceConnection, BIND_AUTO_CREATE);
+			if (ChatRoomHelper.removeRoom(MainWindow.this, roomJid))
+				ChatRoomHelper.syncDbRooms(MainWindow.this);
 		}
 		
 		
@@ -1376,25 +1359,8 @@ public class MainWindow extends SherlockExpandableListActivity {
 		}
 		
 		public void addRoom(final String jid, final String nick, final String pw) {
-			Intent muctestIntent = new Intent(MainWindow.this, XMPPService.class);
-			muctestIntent.setAction("org.yaxim.androidclient.XMPPSERVICE");
-			Uri dtaUri = Uri.parse(jid+"?chat");
-			muctestIntent.setData(dtaUri);
-			
-			ServiceConnection muctestServiceConnection = new ServiceConnection() {
-				public void onServiceConnected(ComponentName name, IBinder service) {
-					IXMPPMucService mucService = IXMPPMucService.Stub.asInterface(service);
-					try {
-						if (ChatRoomHelper.addRoom(MainWindow.this, jid, pw, nick))
-							mucService.syncDbRooms();
-					} catch (RemoteException e) {
-						e.printStackTrace();
-					}
-					unbindService(this);
-				}
-				public void onServiceDisconnected(ComponentName name) {}
-			};
-			bindService(muctestIntent, muctestServiceConnection, BIND_AUTO_CREATE);
+			if (ChatRoomHelper.addRoom(MainWindow.this, jid, pw, nick))
+				ChatRoomHelper.syncDbRooms();
 		}
 
 		
