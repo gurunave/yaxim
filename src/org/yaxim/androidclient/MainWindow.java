@@ -542,6 +542,11 @@ public class MainWindow extends SherlockExpandableListActivity {
 			case R.id.roster_contextmenu_muc_edit:
 				new EditMUCDialog(this, userJid).show();
 				return true;
+			case R.id.roster_contextmenu_muc_leave:
+				// TODO: leave MUC dialog
+				if (ChatRoomHelper.removeRoom(MainWindow.this, userJid))
+					ChatRoomHelper.syncDbRooms(MainWindow.this);
+				return true;
 			}
 		} else {
 
