@@ -65,9 +65,8 @@ public class MucInviteActivity extends SherlockActivity {
 			public void onClick(View v) { // TODO: code-duplication from MainWindow.addRoom ...but how to generalize/call?
 				final String nick = nickText.getText().toString(); 
 				if(nick.equals("")) {
-					Toast errorToast = new Toast(getApplicationContext());
-					errorToast.setText("Please enter a Nickname!");
-					errorToast.show();
+					Toast.makeText(MucInviteActivity.this,
+						"Please enter a Nickname!", Toast.LENGTH_SHORT).show();
 					return;
 				}
 								
