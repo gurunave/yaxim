@@ -605,6 +605,7 @@ public class SmackableImp implements Smackable {
 			Log.d(TAG, "SM: can resume = " + mStreamHandler.isResumePossible() + " needbind=" + need_bind);
 			if (need_bind) {
 				mStreamHandler.notifyInitialLogin();
+				cleanupMUCs();
 				setStatusFromConfig();
 			}
 
@@ -703,7 +704,7 @@ public class SmackableImp implements Smackable {
 			exclusion.append("'").append(rosterEntry.getUser()).append("'");
 		}
 		
-		exclusion.append(") AND "+RosterConstants.GROUP+" NOT IN ('MUCs');");
+		exclusion.append(") AND "+RosterConstants.GROUP+" NOT IN ('" + RosterProvider.RosterConstants.MUCS + "');");
 		int count = mContentResolver.delete(RosterProvider.CONTENT_URI, exclusion.toString(), null);
 		Log.d(TAG, "deleted " + count + " old roster entries");
 	}
@@ -1382,7 +1383,13 @@ public class SmackableImp implements Smackable {
 	@Override
 	public String getLastError() {
 		return mLastError;
-    }
+	}
+
+	private void cleanupMUCs() {
+		mContentResolver.delete(RosterProvider.CONTENT_URI,
+				RosterProvider.RosterConstants.GROUP + " = ?",
+				new String[] { RosterProvider.RosterConstants.MUCS });
+	}
 
 	public synchronized void syncDbRooms() {
 		if (!isAuthenticated()) {
@@ -1497,7 +1504,7 @@ public class SmackableImp implements Smackable {
 		cvR.put(RosterProvider.RosterConstants.ALIAS, room);
 		cvR.put(RosterProvider.RosterConstants.STATUS_MESSAGE, "Synchronizing...");
 		cvR.put(RosterProvider.RosterConstants.STATUS_MODE, StatusMode.dnd.ordinal());
-		cvR.put(RosterProvider.RosterConstants.GROUP, "MUCs");
+		cvR.put(RosterProvider.RosterConstants.GROUP, RosterProvider.RosterConstants.MUCS);
 		upsertRoster(cvR, room);
 		try {
 			muc.join(nickname, password, history, 10*PACKET_TIMEOUT);

@@ -320,13 +320,10 @@ public class MainWindow extends SherlockExpandableListActivity {
 			menuName = String.format("%s (%s)",
 				getPackedItemRow(packedPosition, RosterConstants.ALIAS),
 				getPackedItemRow(packedPosition, RosterConstants.JID));
-			ContentResolver contentResolver = getContentResolver();
-			Cursor res = contentResolver.query(RosterProvider.MUCS_URI, new String[]{}, 
-					RosterConstants.JID+"='"+getPackedItemRow(packedPosition, RosterConstants.JID)+"'", null, null);
-			isMuc = (res.getCount()>0);
+			isMuc = ChatRoomHelper.isRoom(this, getPackedItemRow(packedPosition, RosterConstants.JID));
 		} else {
 			menuName = getPackedItemRow(packedPosition, RosterConstants.GROUP);
-			if (menuName.equals(""))
+			if (menuName.equals("") || menuName.equals(RosterConstants.MUCS))
 				return; // no options for default menu
 			getMenuInflater().inflate(R.menu.roster_group_contextmenu, menu);
 		}
@@ -336,7 +333,7 @@ public class MainWindow extends SherlockExpandableListActivity {
 		menu.setGroupVisible(R.id.roster_contextmenu_contact_menu, isChild && !isMuc);
 		// display group menu for non-standard groups
 		menu.setGroupVisible(R.id.roster_contextmenu_group_menu, !isChild &&
-				(menuName.length() > 0) && !menuName.equals("MUCs"));
+				(menuName.length() > 0));
 		// display stripped down menu for MUCs
 		menu.setGroupVisible(R.id.roster_contextmenu_muc_menu, isChild && isMuc);
 
@@ -1079,7 +1076,7 @@ public class MainWindow extends SherlockExpandableListActivity {
 			cursor.moveToNext();
 		}
 		cursor.close();
-		list.remove("MUCs");
+		list.remove(RosterProvider.RosterConstants.MUCS);
 		return list;
 	}
 
@@ -1162,6 +1159,9 @@ public class MainWindow extends SherlockExpandableListActivity {
 			if (cursor.getString(cursor.getColumnIndexOrThrow(RosterConstants.GROUP)).length() == 0) {
 				TextView groupname = (TextView)view.findViewById(R.id.groupname);
 				groupname.setText(mConfig.enableGroups ? R.string.default_group : R.string.all_contacts_group);
+			} else
+			if (cursor.getString(cursor.getColumnIndexOrThrow(RosterConstants.GROUP)).equals(RosterProvider.RosterConstants.MUCS)) {
+				((TextView)view.findViewById(R.id.groupname)).setText(R.string.muc_group);
 			}
 		}
 

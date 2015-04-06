@@ -353,6 +353,7 @@ public class RosterProvider extends ContentProvider {
 		public static final String STATUS_MODE = "status_mode";
 		public static final String STATUS_MESSAGE = "status_message";
 		public static final String GROUP = "roster_group";
+		public static final String MUCS = "\uFFFF"; // XXX: hack to end up at the end of the alphabetical list
 		
 		public static final String PASSWORD = "password";
 		public static final String NICKNAME = "nickname";

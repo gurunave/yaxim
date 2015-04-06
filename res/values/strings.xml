@@ -294,6 +294,7 @@
 	<!-- default roster group with no name -->
 	<string name="default_group">General</string>
 	<string name="all_contacts_group">All contacts</string>
+	<string name="muc_group">Chat Rooms</string>
 
 	<!-- SEND listener popup -->
 	<string name="chooseContact">Choose contact</string>
