@@ -771,7 +771,7 @@ public class MainWindow extends SherlockExpandableListActivity {
 			aboutDialog();
 			return true;
 		case R.id.menu_muc:
-			mucActions();
+			new EditMUCDialog(this).show();
 			return true;
 
 		}
